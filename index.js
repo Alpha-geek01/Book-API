@@ -118,7 +118,7 @@ bookAPI.get("/au/:author", (req, res) => {
     console.log(req.params.author)
     if( getSpecificAuthorBooks.length === 0) {
         return res.json({
-            error: `No book found with the author id ${req.params.author}`,
+            error: `No book found with the author idp ${req.params.author}`,
         });
     }
     console.log(getSpecificAuthorBooks)
