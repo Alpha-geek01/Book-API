@@ -54,7 +54,7 @@
     // Add new author ✅
 
     // PUT
-    //Update Author name ✅
+    //Update Author name using id ✅
 
     // DELETE
     // Delete an author
@@ -71,7 +71,7 @@
     // to get list of publications based on book ✅
 
     // POST
-    // Add new publications ✅
+    // Add new publications using id ✅
 
     // PUT
     // Update the publication name ✅

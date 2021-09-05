@@ -118,7 +118,7 @@ bookAPI.get("/au/:author", (req, res) => {
     console.log(req.params.author)
     if( getSpecificAuthorBooks.length === 0) {
         return res.json({
-            error: `No book found with the author idp ${req.params.author}`,
+            error: `No book found with the author id ${req.params.author}`,
         });
     }
     console.log(getSpecificAuthorBooks)
@@ -301,29 +301,32 @@ bookAPI.put("/book/update/title/:isbn", (req, res) => {
 
 /* 
 Route           /book/update/title
-Description     update/add new author for a book
+Description     update/add new author 
 Access          PUBLIC
 Parameter       isbn & authorId
 Methods         PUT
 */
 
-bookAPI.put("/book/update/author/:isbn/:authorId", (req, res) => {
+bookAPI.put("/book/update/author/:isbn/", (req, res) => {
 
     // update book database
     database.books.forEach((book) => {
         if (book.ISBN === req.params.isbn) {
-            console.log(req.params.authorId)
-            return book.author.push(parseInt(req.params.authorId));
+            return book.author.push(parseInt(req.body.newAuthor));
         }
     });
 
     // update author database
     database.author.forEach((author) => {
-        if (author.id === parseInt(req.params.authorId)) {
+        if (author.id === req.body.newAuthor) {
             return author.books.push(req.params.isbn);
         }
     });
-    return res.json({ books: database.books, author: database.author});
+    return res.json({ 
+        books: database.books, 
+        author: database.author,
+        message: "New author was added",
+    });
 });
 
 /* 
@@ -363,11 +366,34 @@ bookAPI.put("/publication/update/name/:pubId", (req, res) => {
 });
 
 /* 
-Route           /publication/update/name
-Description     update publication name
+Route           /publication/update/book
+Description     update/add new book to a publication
 Access          PUBLIC
-Parameter       publicationId
+Parameter       isbn
 Methods         PUT
 */
+
+bookAPI.put("/publication/update/book/:isbn", (req, res) => {
+    // Update the publication database
+    database.publication.forEach((publication) => {
+        if (publication.id === req.body.pubId) {
+            return publication.books.push(req.params.isbn);
+        }
+    });
+
+    // Update the book database
+    database.books.forEach((book) => {
+        if (book.ISBN === req.params.isbn) {
+            book.publications = req.body.pubId;
+            return;
+        }
+    });
+
+    return res.json({
+        books: database.books,
+        publication: database.publication,
+        message: "Successfully updated publication",
+    });
+});
 
 bookAPI.listen(3000, () => console.log("Hey server is running! 😎"))
